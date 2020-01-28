@@ -1,0 +1,20 @@
+﻿<Window x:Class="POSH_Toolbelt.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:POSH_Toolbelt"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button Content="Run" Grid.Row="0" Click="Button_Click"></Button>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" >
+            <TextBox x:Name="Script" MinWidth="300"></TextBox>
+            <Label x:Name="Output" MinWidth="300"></Label>
+        </StackPanel>        
+    </Grid>
+</Window>
