@@ -24,36 +24,35 @@ namespace POSH_Toolbelt
     public partial class MainWindow : Window
     {
         private Runspace rs;
+        private PSDataCollection<PSObject> PSData;
         public MainWindow()
         {
             InitializeComponent();
-            var rs = RunspaceFactory.CreateRunspace();
+            rs = RunspaceFactory.CreateRunspace();
             rs.Open();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var scriptTask = RunScript(Script.Text);
-            scriptTask.ContinueWith(x =>
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    foreach (var line in x.Result)
-                    {
-                        Output.Content += line + Environment.NewLine;
-                    }
-                });                
-            });
+            RunScript(Script.Text);
         }
 
-        private async Task<PSDataCollection<PSObject>> RunScript(string script)
+        private void RunScript(string script)
         {
-            using (PowerShell ps = PowerShell.Create())
+            var ps = PowerShell.Create();
+            ps.AddScript(script);
+            ps.Runspace = rs;
+            var psdata = new PSDataCollection<PSObject>();
+            psdata.DataAdding += Psdata_DataAdding;
+            ps.BeginInvoke((PSDataCollection<PSObject>)null, psdata);
+        }
+
+        private void Psdata_DataAdding(object sender, DataAddingEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
             {
-                ps.AddScript(script);
-                ps.Runspace = rs;
-                return await ps.InvokeAsync();
-            }
+                Output.Content += e.ItemAdded + Environment.NewLine;
+            });
         }
     }
 }
