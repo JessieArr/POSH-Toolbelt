@@ -67,7 +67,11 @@ namespace POSH_Toolbelt
             ps.Runspace = rs;
             var psdata = new PSDataCollection<PSObject>();
             psdata.DataAdding += Psdata_DataAdding;
+            ps.Streams.Verbose.DataAdded += Information_DataAdded;
+            ps.Streams.Debug.DataAdded += Information_DataAdded;
             ps.Streams.Information.DataAdded += Information_DataAdded;
+            ps.Streams.Error.DataAdded += Error_DataAdded;
+            ps.Streams.Warning.DataAdded += Warning_DataAdded;
             ps.BeginInvoke((PSDataCollection<PSObject>)null, psdata);
         }
 
@@ -85,8 +89,56 @@ namespace POSH_Toolbelt
                         var brush = new SolidColorBrush(_ColorMapping[foregroundColor.Value]);
                         Output.AddColoredText(msg.Message, brush);
                     }
+                    else
+                    {
+                        Output.AddColoredText(msg.Message, Brushes.White);
+                    }
                 }
             });               
+        }
+
+        private void Error_DataAdded(object sender, DataAddedEventArgs e)
+        {
+            var data = sender as PSDataCollection<InformationRecord>;
+            Dispatcher.Invoke(() =>
+            {
+                foreach (var datum in data)
+                {
+                    var msg = datum.MessageData as HostInformationMessage;
+                    var foregroundColor = msg.ForegroundColor;
+                    if (foregroundColor.HasValue)
+                    {
+                        var brush = new SolidColorBrush(_ColorMapping[foregroundColor.Value]);
+                        Output.AddColoredText(msg.Message, brush);
+                    }
+                    else
+                    {
+                        Output.AddColoredText(msg.Message, Brushes.Red);
+                    }
+                }
+            });
+        }
+
+        private void Warning_DataAdded(object sender, DataAddedEventArgs e)
+        {
+            var data = sender as PSDataCollection<InformationRecord>;
+            Dispatcher.Invoke(() =>
+            {
+                foreach (var datum in data)
+                {
+                    var msg = datum.MessageData as HostInformationMessage;
+                    var foregroundColor = msg.ForegroundColor;
+                    if (foregroundColor.HasValue)
+                    {
+                        var brush = new SolidColorBrush(_ColorMapping[foregroundColor.Value]);
+                        Output.AddColoredText(msg.Message, brush);
+                    }
+                    else
+                    {
+                        Output.AddColoredText(msg.Message, Brushes.Yellow);
+                    }
+                }
+            });
         }
 
         private void Psdata_DataAdding(object sender, DataAddingEventArgs e)
