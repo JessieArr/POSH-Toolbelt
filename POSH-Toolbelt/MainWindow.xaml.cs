@@ -25,6 +25,26 @@ namespace POSH_Toolbelt
     {
         private Runspace rs;
         private PSDataCollection<PSObject> PSData;
+        private Dictionary<ConsoleColor, Color> _ColorMapping = new Dictionary<ConsoleColor, Color>()
+        {
+            { ConsoleColor.Black, Color.FromArgb(0xFF, 0x0, 0x0, 0x0) },
+            { ConsoleColor.DarkBlue, Color.FromArgb(0xFF, 0x0, 0x0, 0x8B) },
+            { ConsoleColor.DarkGreen, Color.FromArgb(0xFF, 0x0, 0x64, 0x0) },
+            { ConsoleColor.DarkCyan, Color.FromArgb(0xFF, 0x0, 0x8B, 0x8B) },
+            { ConsoleColor.DarkRed, Color.FromArgb(0xFF, 0x8B, 0x0, 0x0) },
+            { ConsoleColor.DarkMagenta, Color.FromArgb(0xFF, 0x8B, 0x0, 0x8B) },
+            { ConsoleColor.DarkYellow, Color.FromArgb(0xFF, 0x8B, 0x8B, 0x0) },
+            { ConsoleColor.Gray, Color.FromArgb(0xFF, 0x80, 0x80, 0x80) },
+            { ConsoleColor.DarkGray, Color.FromArgb(0xFF, 0xA9, 0xA9, 0xA9) },
+            { ConsoleColor.Blue, Color.FromArgb(0xFF, 0x0, 0x0, 0xFF) },
+            { ConsoleColor.Green, Color.FromArgb(0xFF, 0x00, 0x80, 0x0) },
+            { ConsoleColor.Cyan, Color.FromArgb(0xFF, 0x0, 0xFF, 0xFF) },
+            { ConsoleColor.Red, Color.FromArgb(0xFF, 0xFF, 0x0, 0x0) },
+            { ConsoleColor.Magenta, Color.FromArgb(0xFF, 0xFF, 0x0, 0xFF) },
+            { ConsoleColor.Yellow, Color.FromArgb(0xFF, 0xFF, 0xFF, 0x0) },
+            { ConsoleColor.White, Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF) },
+        };
+
         public MainWindow()
         {
             InitializeComponent();
@@ -54,24 +74,26 @@ namespace POSH_Toolbelt
         private void Information_DataAdded(object sender, DataAddedEventArgs e)
         {
             var data = sender as PSDataCollection<InformationRecord>;
-            foreach(var datum in data)
+            Dispatcher.Invoke(() =>
             {
-                var msg = datum.MessageData as HostInformationMessage;
-                var x = msg.ForegroundColor;
-            }
-            throw new NotImplementedException();
+                foreach (var datum in data)
+                {
+                    var msg = datum.MessageData as HostInformationMessage;
+                    var foregroundColor = msg.ForegroundColor;
+                    if (foregroundColor.HasValue)
+                    {
+                        var brush = new SolidColorBrush(_ColorMapping[foregroundColor.Value]);
+                        Output.AddColoredText(msg.Message, brush);
+                    }
+                }
+            });               
         }
 
         private void Psdata_DataAdding(object sender, DataAddingEventArgs e)
         {
             Dispatcher.Invoke(() =>
             {
-                var para = new Paragraph();
-                para.Margin = new Thickness(0);
-                var text = new TextRange(para.ContentEnd, para.ContentEnd);
-                text.Text = e.ItemAdded.ToString();
-                text.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Red);
-                Output.Document.Blocks.Add(para);
+                Output.AddColoredText(e.ItemAdded.ToString(), Brushes.White);
             });
         }
     }
