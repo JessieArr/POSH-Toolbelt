@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POSH-Toolbelt", "POSH-Toolbelt\POSH-Toolbelt.csproj", "{4F8C1C7E-6206-4D70-B2FB-5EA46103962E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POSH-Toolbelt", "POSH-Toolbelt.csproj", "{4F8C1C7E-6206-4D70-B2FB-5EA46103962E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

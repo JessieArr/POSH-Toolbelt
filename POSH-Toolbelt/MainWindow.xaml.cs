@@ -30,6 +30,9 @@ namespace POSH_Toolbelt
             InitializeComponent();
             rs = RunspaceFactory.CreateRunspace();
             rs.Open();
+
+            var color = Color.FromRgb(0, 36, 86);
+            Output.Background = new SolidColorBrush(color);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -44,14 +47,31 @@ namespace POSH_Toolbelt
             ps.Runspace = rs;
             var psdata = new PSDataCollection<PSObject>();
             psdata.DataAdding += Psdata_DataAdding;
+            ps.Streams.Information.DataAdded += Information_DataAdded;
             ps.BeginInvoke((PSDataCollection<PSObject>)null, psdata);
+        }
+
+        private void Information_DataAdded(object sender, DataAddedEventArgs e)
+        {
+            var data = sender as PSDataCollection<InformationRecord>;
+            foreach(var datum in data)
+            {
+                var msg = datum.MessageData as HostInformationMessage;
+                var x = msg.ForegroundColor;
+            }
+            throw new NotImplementedException();
         }
 
         private void Psdata_DataAdding(object sender, DataAddingEventArgs e)
         {
             Dispatcher.Invoke(() =>
             {
-                Output.Content += e.ItemAdded + Environment.NewLine;
+                var para = new Paragraph();
+                para.Margin = new Thickness(0);
+                var text = new TextRange(para.ContentEnd, para.ContentEnd);
+                text.Text = e.ItemAdded.ToString();
+                text.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Red);
+                Output.Document.Blocks.Add(para);
             });
         }
     }

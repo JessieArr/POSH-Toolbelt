@@ -12,9 +12,13 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Button Content="Run" Grid.Row="0" Click="Button_Click"></Button>
-        <StackPanel Orientation="Horizontal" Grid.Row="1" >
-            <TextBox x:Name="Script" MinWidth="300"></TextBox>
-            <Label x:Name="Output" MinWidth="300"></Label>
-        </StackPanel>        
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="Script" HorizontalAlignment="Stretch" Grid.Column="0"></TextBox>
+            <RichTextBox x:Name="Output" HorizontalAlignment="Stretch" Grid.Column="1"></RichTextBox>
+        </Grid>
     </Grid>
 </Window>
