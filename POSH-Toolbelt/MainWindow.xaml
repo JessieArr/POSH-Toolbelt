@@ -17,7 +17,7 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="Script" HorizontalAlignment="Stretch" Grid.Column="0"></TextBox>
+            <TextBox x:Name="Script" HorizontalAlignment="Stretch" Grid.Column="0" AcceptsReturn="True" ></TextBox>
             <RichTextBox x:Name="Output" HorizontalAlignment="Stretch" Grid.Column="1"></RichTextBox>
         </Grid>
     </Grid>

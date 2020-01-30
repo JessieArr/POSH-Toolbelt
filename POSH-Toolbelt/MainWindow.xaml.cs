@@ -51,8 +51,14 @@ namespace POSH_Toolbelt
             rs = RunspaceFactory.CreateRunspace();
             rs.Open();
 
-            var color = Color.FromRgb(0, 36, 86);
-            Output.Background = new SolidColorBrush(color);
+            var scriptBackgroundColor = Color.FromRgb(30, 30, 30);
+            var scriptTextColor = Color.FromRgb(240, 240, 240);
+            Script.Background = new SolidColorBrush(scriptBackgroundColor);
+            Script.Foreground = new SolidColorBrush(scriptTextColor);
+
+            var outputBackgroundColor = Color.FromRgb(0, 36, 86);
+            
+            Output.Background = new SolidColorBrush(outputBackgroundColor);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -72,72 +78,51 @@ namespace POSH_Toolbelt
             ps.Streams.Information.DataAdded += Information_DataAdded;
             ps.Streams.Error.DataAdded += Error_DataAdded;
             ps.Streams.Warning.DataAdded += Warning_DataAdded;
+            ps.InvocationStateChanged += Ps_InvocationStateChanged;
             ps.BeginInvoke((PSDataCollection<PSObject>)null, psdata);
+        }
+
+        private void Ps_InvocationStateChanged(object sender, PSInvocationStateChangedEventArgs e)
+        {
         }
 
         private void Information_DataAdded(object sender, DataAddedEventArgs e)
         {
             var data = sender as PSDataCollection<InformationRecord>;
+            var datum = data[e.Index];
             Dispatcher.Invoke(() =>
             {
-                foreach (var datum in data)
+                var msg = datum.MessageData as HostInformationMessage;
+                var foregroundColor = msg.ForegroundColor;
+                if (foregroundColor.HasValue)
                 {
-                    var msg = datum.MessageData as HostInformationMessage;
-                    var foregroundColor = msg.ForegroundColor;
-                    if (foregroundColor.HasValue)
-                    {
-                        var brush = new SolidColorBrush(_ColorMapping[foregroundColor.Value]);
-                        Output.AddColoredText(msg.Message, brush);
-                    }
-                    else
-                    {
-                        Output.AddColoredText(msg.Message, Brushes.White);
-                    }
+                    var brush = new SolidColorBrush(_ColorMapping[foregroundColor.Value]);
+                    Output.AddColoredText(msg.Message, brush);
                 }
-            });               
+                else
+                {
+                    Output.AddColoredText(msg.Message, Brushes.White);
+                }
+            });
         }
 
         private void Error_DataAdded(object sender, DataAddedEventArgs e)
         {
-            var data = sender as PSDataCollection<InformationRecord>;
+            var data = sender as PSDataCollection<ErrorRecord>;
+            var datum = data[e.Index];
             Dispatcher.Invoke(() =>
             {
-                foreach (var datum in data)
-                {
-                    var msg = datum.MessageData as HostInformationMessage;
-                    var foregroundColor = msg.ForegroundColor;
-                    if (foregroundColor.HasValue)
-                    {
-                        var brush = new SolidColorBrush(_ColorMapping[foregroundColor.Value]);
-                        Output.AddColoredText(msg.Message, brush);
-                    }
-                    else
-                    {
-                        Output.AddColoredText(msg.Message, Brushes.Red);
-                    }
-                }
+                Output.AddColoredText(datum.Exception.Message, Brushes.Red);
             });
         }
 
         private void Warning_DataAdded(object sender, DataAddedEventArgs e)
         {
-            var data = sender as PSDataCollection<InformationRecord>;
+            var data = sender as PSDataCollection<WarningRecord>;
+            var datum = data[e.Index];
             Dispatcher.Invoke(() =>
             {
-                foreach (var datum in data)
-                {
-                    var msg = datum.MessageData as HostInformationMessage;
-                    var foregroundColor = msg.ForegroundColor;
-                    if (foregroundColor.HasValue)
-                    {
-                        var brush = new SolidColorBrush(_ColorMapping[foregroundColor.Value]);
-                        Output.AddColoredText(msg.Message, brush);
-                    }
-                    else
-                    {
-                        Output.AddColoredText(msg.Message, Brushes.Yellow);
-                    }
-                }
+                Output.AddColoredText(datum.Message, Brushes.Yellow);
             });
         }
 
