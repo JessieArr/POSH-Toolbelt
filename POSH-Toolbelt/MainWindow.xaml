@@ -6,19 +6,34 @@
         xmlns:local="clr-namespace:POSH_Toolbelt"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        <Button Content="Run" Grid.Row="0" Click="Button_Click"></Button>
-        <Grid Grid.Row="1">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Width="Auto" Height="20">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Click="Open_Click"/>
+                <MenuItem Header="E_xit" Click="Exit_Click"/>
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="Script" HorizontalAlignment="Stretch" Grid.Column="0" AcceptsReturn="True" ></TextBox>
-            <RichTextBox x:Name="Output" HorizontalAlignment="Stretch" Grid.Column="1"></RichTextBox>
+            <Button Content="Run" Grid.Row="0" Grid.Column="1" Click="Button_Click"></Button>
+            <TreeView x:Name="FolderTree" Grid.Row="1" Grid.Column="0"></TreeView>
+            <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="Script" HorizontalAlignment="Stretch" Grid.Column="0" AcceptsReturn="True" ></TextBox>
+                <RichTextBox x:Name="Output" HorizontalAlignment="Stretch" Grid.Column="1"></RichTextBox>
+            </Grid>
         </Grid>
-    </Grid>
+    </DockPanel>
+    
 </Window>

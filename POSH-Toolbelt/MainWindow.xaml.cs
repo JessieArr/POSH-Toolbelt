@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
@@ -64,6 +67,61 @@ namespace POSH_Toolbelt
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             RunScript(Script.Text);
+        }
+
+        private void Open_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new CommonOpenFileDialog();
+            dialog.Title = "My Title";
+            dialog.IsFolderPicker = true;
+            dialog.AddToMostRecentlyUsedList = false;
+            dialog.AllowNonFileSystemItems = false;
+            dialog.EnsureFileExists = true;
+            dialog.EnsurePathExists = true;
+            dialog.EnsureReadOnly = false;
+            dialog.EnsureValidNames = true;
+            dialog.Multiselect = false;
+            dialog.ShowPlacesList = true;
+
+            var result = dialog.ShowDialog();
+            if (result == CommonFileDialogResult.Ok)
+            {
+                var folderPath = dialog.FileName;
+                RecursivelyBuildFolderTree(FolderTree.Items, folderPath);
+            }
+        }
+
+        private void RecursivelyBuildFolderTree(ItemCollection collection, string path)
+        {
+            var directoryInfo = new DirectoryInfo(path);
+
+            var directories = directoryInfo.GetDirectories();
+            foreach (var directory in directories)
+            {
+                var directoryItem = new TreeViewItem();
+                directoryItem.Header = directory.Name;
+                collection.Add(directoryItem);
+                RecursivelyBuildFolderTree(directoryItem.Items, directory.FullName);
+            }
+
+            var files = directoryInfo.GetFiles("*.ps1");
+            foreach (var file in files)
+            {
+                var newItem = new TreeViewItem();
+                newItem.Header = file.Name;
+                newItem.MouseDoubleClick += (sender, args) =>
+                {
+                    var fileText = File.ReadAllText(file.FullName);
+                    Script.Text = fileText;
+                };
+                collection.Add(newItem);
+            }
+            
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown(0);
         }
 
         private void RunScript(string script)
