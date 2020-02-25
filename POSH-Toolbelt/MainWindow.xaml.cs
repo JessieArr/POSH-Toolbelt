@@ -1,5 +1,7 @@
 ﻿using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using POSH_Toolbelt.Services;
+using POSH_Toolbelt.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,7 +19,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace POSH_Toolbelt
 {
@@ -62,6 +63,8 @@ namespace POSH_Toolbelt
             var outputBackgroundColor = Color.FromRgb(0, 36, 86);
             
             Output.Background = new SolidColorBrush(outputBackgroundColor);
+
+            MainWindowHelper.MainWindow = this;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -69,10 +72,10 @@ namespace POSH_Toolbelt
             RunScript(Script.Text);
         }
 
-        private void Open_Click(object sender, RoutedEventArgs e)
+        private void New_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new CommonOpenFileDialog();
-            dialog.Title = "My Title";
+            dialog.Title = "Select Folder";
             dialog.IsFolderPicker = true;
             dialog.AddToMostRecentlyUsedList = false;
             dialog.AllowNonFileSystemItems = false;
@@ -87,36 +90,31 @@ namespace POSH_Toolbelt
             if (result == CommonFileDialogResult.Ok)
             {
                 var folderPath = dialog.FileName;
-                RecursivelyBuildFolderTree(FolderTree.Items, folderPath);
+                var dialogWindow = new NewProjectDialog(folderPath);
+                dialogWindow.Show();
             }
         }
 
-        private void RecursivelyBuildFolderTree(ItemCollection collection, string path)
+        private void Open_Click(object sender, RoutedEventArgs e)
         {
-            var directoryInfo = new DirectoryInfo(path);
+            var dialog = new CommonOpenFileDialog();
+            dialog.Title = "My Title";
+            dialog.Filters.Add(new CommonFileDialogFilter("POSH Toolbelt Project", ".ptproj"));
+            dialog.AddToMostRecentlyUsedList = false;
+            dialog.AllowNonFileSystemItems = false;
+            dialog.EnsureFileExists = true;
+            dialog.EnsurePathExists = true;
+            dialog.EnsureReadOnly = false;
+            dialog.EnsureValidNames = true;
+            dialog.Multiselect = false;
+            dialog.ShowPlacesList = true;
 
-            var directories = directoryInfo.GetDirectories();
-            foreach (var directory in directories)
+            var result = dialog.ShowDialog();
+            if (result == CommonFileDialogResult.Ok)
             {
-                var directoryItem = new TreeViewItem();
-                directoryItem.Header = directory.Name;
-                collection.Add(directoryItem);
-                RecursivelyBuildFolderTree(directoryItem.Items, directory.FullName);
+                var projectPath = dialog.FileName;
+                FolderTree.Items.Add(FileBrowserService.Open(projectPath));
             }
-
-            var files = directoryInfo.GetFiles("*.ps1");
-            foreach (var file in files)
-            {
-                var newItem = new TreeViewItem();
-                newItem.Header = file.Name;
-                newItem.MouseDoubleClick += (sender, args) =>
-                {
-                    var fileText = File.ReadAllText(file.FullName);
-                    Script.Text = fileText;
-                };
-                collection.Add(newItem);
-            }
-            
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)
