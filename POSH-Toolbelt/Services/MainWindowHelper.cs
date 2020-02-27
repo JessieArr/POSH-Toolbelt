@@ -1,4 +1,5 @@
-﻿using System;
+﻿using POSH_Toolbelt.Controls;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Controls;
@@ -8,9 +9,9 @@ namespace POSH_Toolbelt.Services
     public static class MainWindowHelper
     {
         public static MainWindow MainWindow { get; set; }
-        public static void SetScriptText(string text)
+        public static void SetFileToBeEdited(UserControl editor)
         {
-            MainWindow.Script.Text = text;
+            MainWindow.SetEditorControl(editor);
         }
 
         public static void SetRootTreeNode(TreeViewItem item)

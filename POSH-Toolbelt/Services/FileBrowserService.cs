@@ -1,4 +1,6 @@
-﻿using POSH_Toolbelt.Windows;
+﻿using POSH_Toolbelt.Controls;
+using POSH_Toolbelt.Models;
+using POSH_Toolbelt.Windows;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,6 +30,7 @@ namespace POSH_Toolbelt.Services
             var rootTreeItem = new TreeViewItem();
             rootTreeItem.Header = projectName;
             rootTreeItem.IsExpanded = true;
+            AddCreateSnippetToTreeViewItem(rootTreeItem, projectPath);
             RootNode = rootTreeItem;
             RefreshTreeView();
             return rootTreeItem;
@@ -42,15 +45,7 @@ namespace POSH_Toolbelt.Services
             {
                 var directoryItem = new TreeViewItem();
                 directoryItem.Header = directory.Name;
-                directoryItem.ContextMenu = new ContextMenu();
-                var createItem = new MenuItem();
-                createItem.Header = "Create Snippet";
-                createItem.Click += (sender, args) =>
-                {
-                    var dialog = new NewSnippetDialog(directory.FullName);
-                    dialog.Show();
-                };
-                directoryItem.ContextMenu.Items.Add(createItem);
+                AddCreateSnippetToTreeViewItem(directoryItem, directory.FullName);
                 collection.Add(directoryItem);
                 RecursivelyBuildFolderTree(directoryItem.Items, directory.FullName);
             }
@@ -62,8 +57,7 @@ namespace POSH_Toolbelt.Services
                 newItem.Header = file.Name;
                 newItem.MouseDoubleClick += (sender, args) =>
                 {
-                    var fileText = File.ReadAllText(file.FullName);
-                    MainWindowHelper.SetScriptText(fileText);
+                    OpenFileService.OpenFile(file.FullName);
                 };
                 collection.Add(newItem);
             }
@@ -75,11 +69,27 @@ namespace POSH_Toolbelt.Services
                 newItem.Header = file.Name;
                 newItem.MouseDoubleClick += (sender, args) =>
                 {
-                    var fileText = File.ReadAllText(file.FullName);
-                    MainWindowHelper.SetScriptText(fileText);
+                    OpenFileService.OpenFile(file.FullName);
                 };
                 collection.Add(newItem);
             }
+        }
+
+        private static void AddCreateSnippetToTreeViewItem(TreeViewItem treeViewItem, string path)
+        {
+            if(treeViewItem.ContextMenu == null)
+            {
+                treeViewItem.ContextMenu = new ContextMenu();
+            }
+            var createItem = new MenuItem();
+            createItem.Header = "Create Snippet";
+            createItem.Click += (sender, args) =>
+            {
+                var dialog = new NewSnippetDialog(path);
+                dialog.Show();
+            };
+            treeViewItem.ContextMenu.Items.Add(createItem);
+
         }
     }
 }

@@ -10,30 +10,22 @@
         <Menu DockPanel.Dock="Top" Width="Auto" Height="20">
             <MenuItem Header="_File">
                 <MenuItem Header="_New" Click="New_Click"/>
+                <MenuItem Header="_Save" Click="Save_Click"/>
                 <MenuItem Header="_Open" Click="Open_Click"/>
                 <MenuItem Header="E_xit" Click="Exit_Click"/>
             </MenuItem>
         </Menu>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="20"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="200"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button Content="Run" Grid.Row="0" Grid.Column="1" Click="Button_Click"></Button>
-            <TreeView x:Name="FolderTree" Grid.Row="1" Grid.Column="0"></TreeView>
-            <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <TextBox x:Name="Script" HorizontalAlignment="Stretch" Grid.Column="0" AcceptsReturn="True" ></TextBox>
-                <RichTextBox x:Name="Output" HorizontalAlignment="Stretch" Grid.Column="1"></RichTextBox>
-            </Grid>
+            <TreeView x:Name="FolderTree" Grid.Row="0" Grid.Column="0"></TreeView>
+            <DockPanel x:Name="MainContent" Grid.Row="0" Grid.Column="1" >                
+            </DockPanel>
         </Grid>
     </DockPanel>
     
