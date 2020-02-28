@@ -1,4 +1,5 @@
-﻿using POSH_Toolbelt.Controls;
+﻿using POSH_Toolbelt.Constants;
+using POSH_Toolbelt.Controls;
 using POSH_Toolbelt.Models;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace POSH_Toolbelt.Services
         {
             if (!_OpenFiles.ContainsKey(filePathToOpen))
             {
-                var editor = new PowershellScriptEditor(filePathToOpen);
+                var editor = GetEditorForFile(filePathToOpen);
                 MainWindowHelper.SetFileToBeEdited(editor);
                 _OpenFiles[filePathToOpen] = new OpenEditorFile(filePathToOpen, editor);
             }
@@ -37,15 +38,28 @@ namespace POSH_Toolbelt.Services
 
         public static void SaveAllOpenFiles()
         {
-            foreach(var file in  _OpenFiles)
+            foreach (var file in _OpenFiles)
             {
-                if(file.Value.IsDirty)
+                if (file.Value.IsDirty)
                 {
                     var currentValue = file.Value.Editor.GetCurrentFileContents();
                     file.Value.IsDirty = false;
                     File.WriteAllText(file.Value.FilePath, currentValue);
                 }
             }
+        }
+
+        private static FileEditor GetEditorForFile(string path)
+        {
+            if (path.EndsWith(FileExtensions.PowershellScriptExtension, StringComparison.OrdinalIgnoreCase))
+            {
+                return new PowershellScriptEditor(path);
+            }
+            if (path.EndsWith(FileExtensions.SnippetExtension, StringComparison.OrdinalIgnoreCase))
+            {
+                return new SnippetEditor(path);
+            }
+            return new PowershellScriptEditor(path);
         }
     }
 }

@@ -66,7 +66,7 @@ namespace POSH_Toolbelt.Services
             foreach (var file in poshToolbeltSnippetFiles)
             {
                 var newItem = new TreeViewItem();
-                newItem.Header = file.Name;
+                newItem.Header = file.Name;                
                 newItem.MouseDoubleClick += (sender, args) =>
                 {
                     OpenFileService.OpenFile(file.FullName);

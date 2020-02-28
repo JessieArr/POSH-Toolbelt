@@ -34,7 +34,7 @@ namespace POSH_Toolbelt
             MainWindowHelper.MainWindow = this;
         }
 
-        public void SetEditorControl(UserControl editorControl)
+        public void SetEditorControl(FileEditor editorControl)
         {
             MainContent.Children.Clear();
             MainContent.Children.Add(editorControl);

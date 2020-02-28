@@ -6,6 +6,7 @@ namespace POSH_Toolbelt.Constants
 {
     public static class FileExtensions
     {
+        public static string PowershellScriptExtension => ".ps1";
         public static string ProjectExtension => ".ptproj";
         public static string SnippetExtension => ".ptsnip";
     }

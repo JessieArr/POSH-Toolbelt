@@ -9,7 +9,7 @@ namespace POSH_Toolbelt.Services
     public static class MainWindowHelper
     {
         public static MainWindow MainWindow { get; set; }
-        public static void SetFileToBeEdited(UserControl editor)
+        public static void SetFileToBeEdited(FileEditor editor)
         {
             MainWindow.SetEditorControl(editor);
         }
