@@ -31,6 +31,7 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0">Variable Name</Label>
                         <Label Grid.Column="1">Friendly Name</Label>

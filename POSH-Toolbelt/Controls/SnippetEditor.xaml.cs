@@ -73,16 +73,11 @@ namespace POSH_Toolbelt.Controls
             }));
         }
 
-        private void AddVariableGrid()
-        {
-
-
-        }
-
         private Grid GetGridForInput(SnippetInput input)
         {
             var newInputGrid = new Grid();
             newInputGrid.Visibility = Visibility.Visible;
+            newInputGrid.ColumnDefinitions.Add(new ColumnDefinition());
             newInputGrid.ColumnDefinitions.Add(new ColumnDefinition());
             newInputGrid.ColumnDefinitions.Add(new ColumnDefinition());
             newInputGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -119,6 +114,16 @@ namespace POSH_Toolbelt.Controls
             optional.IsChecked = input.IsOptional;
             newInputGrid.Children.Add(optional);
             Grid.SetColumn(optional, 4);
+
+            var remove = new Button();
+            remove.Content = "Remove";
+            remove.Click += (sender, args) =>
+            {
+                InputStack.Children.Remove(newInputGrid);
+            };
+            newInputGrid.Children.Add(remove);
+            Grid.SetColumn(remove, 5);
+
             return newInputGrid;
         }
 

@@ -31,6 +31,7 @@ namespace POSH_Toolbelt.Services
             rootTreeItem.Header = projectName;
             rootTreeItem.IsExpanded = true;
             AddCreateSnippetToTreeViewItem(rootTreeItem, projectPath);
+            AddCreateFolderToTreeViewItem(rootTreeItem, projectPath);
             RootNode = rootTreeItem;
             RefreshTreeView();
             return rootTreeItem;
@@ -46,6 +47,7 @@ namespace POSH_Toolbelt.Services
                 var directoryItem = new TreeViewItem();
                 directoryItem.Header = directory.Name;
                 AddCreateSnippetToTreeViewItem(directoryItem, directory.FullName);
+                AddCreateFolderToTreeViewItem(directoryItem, directory.FullName);
                 collection.Add(directoryItem);
                 RecursivelyBuildFolderTree(directoryItem.Items, directory.FullName);
             }
@@ -59,6 +61,7 @@ namespace POSH_Toolbelt.Services
                 {
                     OpenFileService.OpenFile(file.FullName);
                 };
+                AddDeleteToTreeViewItem(newItem, file.FullName);
                 collection.Add(newItem);
             }
 
@@ -71,6 +74,7 @@ namespace POSH_Toolbelt.Services
                 {
                     OpenFileService.OpenFile(file.FullName);
                 };
+                AddDeleteToTreeViewItem(newItem, file.FullName);
                 collection.Add(newItem);
             }
         }
@@ -89,7 +93,38 @@ namespace POSH_Toolbelt.Services
                 dialog.Show();
             };
             treeViewItem.ContextMenu.Items.Add(createItem);
+        }
 
+        private static void AddCreateFolderToTreeViewItem(TreeViewItem treeViewItem, string path)
+        {
+            if (treeViewItem.ContextMenu == null)
+            {
+                treeViewItem.ContextMenu = new ContextMenu();
+            }
+            var createItem = new MenuItem();
+            createItem.Header = "New Folder";
+            createItem.Click += (sender, args) =>
+            {
+                var dialog = new NewFolderDialog(path);
+                dialog.Show();
+            };
+            treeViewItem.ContextMenu.Items.Add(createItem);
+        }
+
+        private static void AddDeleteToTreeViewItem(TreeViewItem treeViewItem, string path)
+        {
+            if (treeViewItem.ContextMenu == null)
+            {
+                treeViewItem.ContextMenu = new ContextMenu();
+            }
+            var createItem = new MenuItem();
+            createItem.Header = "Delete";
+            createItem.Click += (sender, args) =>
+            {
+                File.Delete(path);
+                RefreshTreeView();
+            };
+            treeViewItem.ContextMenu.Items.Add(createItem);
         }
     }
 }
