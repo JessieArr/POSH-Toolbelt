@@ -34,8 +34,18 @@ namespace POSH_Toolbelt.Windows
             newSnippet.Name = name.Substring(0, name.LastIndexOf(FileExtensions.SnippetExtension));
 
             var fileText = JsonConvert.SerializeObject(newSnippet, Formatting.Indented);
-            var directory = Path.GetDirectoryName(_Path);
-            File.WriteAllText(Path.Combine(directory, name), fileText);
+
+            var fileAttributes = File.GetAttributes(_Path);
+
+            if (fileAttributes.HasFlag(FileAttributes.Directory))
+            {
+                File.WriteAllText(Path.Combine(_Path, name), fileText);
+            }
+            else
+            {
+                var directory = Path.GetDirectoryName(_Path);
+                File.WriteAllText(Path.Combine(directory, name), fileText);
+            }
 
             FileBrowserService.RefreshTreeView();
             Close();

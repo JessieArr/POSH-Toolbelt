@@ -31,7 +31,7 @@ namespace POSH_Toolbelt.Services
             rootTreeItem.Header = projectName;
             rootTreeItem.IsExpanded = true;
             AddCreateSnippetToTreeViewItem(rootTreeItem, projectPath);
-            AddCreateFolderToTreeViewItem(rootTreeItem, projectPath);
+            AddCreateFolderToTreeViewItem(rootTreeItem, Path.GetDirectoryName(projectPath));
             RootNode = rootTreeItem;
             RefreshTreeView();
             return rootTreeItem;

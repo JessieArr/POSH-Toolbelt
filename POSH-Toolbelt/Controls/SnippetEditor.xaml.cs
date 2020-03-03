@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -68,7 +69,6 @@ namespace POSH_Toolbelt.Controls
                 VariableName = "$MyVariable",
                 FriendlyName = "Friendly Name",
                 Description = "Description",
-                Type = "",
                 IsOptional = false,
             }));
         }
@@ -101,12 +101,11 @@ namespace POSH_Toolbelt.Controls
             Grid.SetColumn(description, 2);
 
             var type = new ComboBox();
-            type.ItemsSource = new List<string>()
-            {
-                "String",
-                "Integer"
-            };
-            type.SelectedItem = input.Type;
+            type.DisplayMemberPath = "Value";
+            type.SelectedValuePath = "Key";
+            var availableTypes = TypeService.GetAvailableTypes().ToDictionary(x => x.ID, x => x.Name);
+            type.ItemsSource = availableTypes;
+            type.SelectedValue = input.TypeID;
             newInputGrid.Children.Add(type);
             Grid.SetColumn(type, 3);
 
@@ -133,6 +132,7 @@ namespace POSH_Toolbelt.Controls
             newInputGrid.Visibility = Visibility.Visible;
             newInputGrid.ColumnDefinitions.Add(new ColumnDefinition());
             newInputGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            newInputGrid.ColumnDefinitions.Add(new ColumnDefinition());
             newInputGrid.RowDefinitions.Add(new RowDefinition());
 
             var friendlyName = new Label();
@@ -143,6 +143,12 @@ namespace POSH_Toolbelt.Controls
             var friendlyNameInput = new TextBox();
             newInputGrid.Children.Add(friendlyNameInput);
             Grid.SetColumn(friendlyNameInput, 1);
+
+            var id = new Label();
+            id.Content = input.TypeID;
+            id.Visibility = Visibility.Collapsed;
+            newInputGrid.Children.Add(id);
+            Grid.SetColumn(id, 2);
 
             return newInputGrid;
         }
@@ -158,14 +164,16 @@ namespace POSH_Toolbelt.Controls
                     var variableName = ((TextBox)grid.Children[0]).Text;
                     var friendlyName = ((TextBox)grid.Children[1]).Text;
                     var description = ((TextBox)grid.Children[2]).Text;
-                    var type = ((ComboBox)grid.Children[3]).Text;
+                    var typeName = ((KeyValuePair<Guid, string>)((ComboBox)grid.Children[3]).SelectedItem).Value;
+                    var typeId = ((KeyValuePair<Guid, string>)((ComboBox)grid.Children[3]).SelectedItem).Key;
                     var optional = ((CheckBox)grid.Children[4]).IsChecked;
                     inputs.Add(new SnippetInput()
                     {
                         VariableName = variableName,
                         FriendlyName = friendlyName,
                         Description = description,
-                        Type = type,
+                        TypeName = typeName,
+                        TypeID = typeId,
                         IsOptional = optional.HasValue && optional.Value
                     });
                 }
@@ -185,6 +193,10 @@ namespace POSH_Toolbelt.Controls
 
         private void Run_Click(object sender, RoutedEventArgs e)
         {
+            if(!AreRunInputsValid())
+            {
+                return;
+            }
             var inputs = GetRunInputsFromUI();
             var command = "";
             foreach(var input in inputs)
@@ -194,6 +206,30 @@ namespace POSH_Toolbelt.Controls
             command += Environment.NewLine + ScriptEditor.Text;
             var window = new ConsoleWindow(command);
             window.Show();
+        }
+
+        private bool AreRunInputsValid()
+        {
+            var availableTypes = TypeService.GetAvailableTypes();
+            foreach (var child in RunInputs.Children)
+            {
+                var grid = child as Grid;
+                if (grid != null)
+                {
+                    var typeID = ((Label)grid.Children[2]).Content.ToString();
+                    var value = ((TextBox)grid.Children[1]).Text;
+                    var thisType = availableTypes.First(x => x.ID == Guid.Parse(typeID));
+                    if(!String.IsNullOrEmpty(thisType.Regex))
+                    {
+                        var regex = new Regex(thisType.Regex);
+                        if(!regex.IsMatch(value))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
         }
 
         private Dictionary<string, string> GetRunInputsFromUI()
