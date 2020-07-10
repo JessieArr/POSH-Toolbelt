@@ -204,8 +204,11 @@ namespace POSH_Toolbelt.Controls
                 command += $"{input.Key} = \"{input.Value}\"" + Environment.NewLine;
             }
             command += Environment.NewLine + ScriptEditor.Text;
-            var window = new ConsoleWindow(command);
-            window.Show();
+
+            //var window = new ConsoleWindow(command);
+            //window.Show();
+            var psService = new PowershellService();
+            psService.OpenPSWindowAndRunScript(command);
         }
 
         private bool AreRunInputsValid()
