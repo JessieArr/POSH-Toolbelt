@@ -45,6 +45,7 @@ namespace POSH_Toolbelt.Services
             foreach (var directory in directories)
             {
                 var directoryItem = new TreeViewItem();
+                
                 directoryItem.Header = directory.Name;
                 AddCreateSnippetToTreeViewItem(directoryItem, directory.FullName);
                 AddCreateFolderToTreeViewItem(directoryItem, directory.FullName);

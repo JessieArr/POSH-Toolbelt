@@ -32,6 +32,16 @@ namespace POSH_Toolbelt
             InitializeComponent();
 
             MainWindowHelper.MainWindow = this;
+
+            var historyService = new ApplicationHistoryService();
+            var history = historyService.GetApplicationHistory();
+            if(!String.IsNullOrEmpty(history.MostRecentOpenedProject))
+            {
+                if(File.Exists(history.MostRecentOpenedProject))
+                {
+                    FolderTree.Items.Add(FileBrowserService.Open(history.MostRecentOpenedProject));
+                }
+            }
         }
 
         public void SetEditorControl(FileEditor editorControl)
@@ -87,6 +97,11 @@ namespace POSH_Toolbelt
             {
                 var projectPath = dialog.FileName;
                 FolderTree.Items.Add(FileBrowserService.Open(projectPath));
+
+                var historyService = new ApplicationHistoryService();
+                var history = historyService.GetApplicationHistory();
+                history.MostRecentOpenedProject = projectPath;
+                historyService.SaveApplicationHistory(history);
             }
         }
 
