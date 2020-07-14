@@ -1,22 +1,23 @@
 ﻿using POSH_Toolbelt.FileFormats;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace POSH_Toolbelt.Services
 {
     public static class TypeService
     {
-        private static List<POSHType> DefaultTypes = new List<POSHType>()
+        private static List<POSHToolbeltType> DefaultTypes = new List<POSHToolbeltType>()
         {
-            new POSHType()
+            new POSHToolbeltType()
             {
                 ID = Guid.Parse("a7467ec5-f159-4a39-8ff2-66cc3144d4c6"),
                 Name = "String",
                 EmitQuotes = true,
                 Regex = ".+",
             },
-            new POSHType()
+            new POSHToolbeltType()
             {
                 ID = Guid.Parse("ea6ecd6e-3628-4197-8453-02300c0cb086"),
                 Name = "Integer",
@@ -25,9 +26,11 @@ namespace POSH_Toolbelt.Services
             },
         };
 
-        public static List<POSHType> GetAvailableTypes()
+        public static List<POSHToolbeltType> CustomTypes = new List<POSHToolbeltType>();
+
+        public static List<POSHToolbeltType> GetAvailableTypes()
         {
-            return DefaultTypes;
+            return DefaultTypes.Concat(CustomTypes).ToList();
         }
     }
 }

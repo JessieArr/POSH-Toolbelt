@@ -140,9 +140,21 @@ namespace POSH_Toolbelt.Controls
             newInputGrid.Children.Add(friendlyName);
             Grid.SetColumn(friendlyName, 0);
 
-            var friendlyNameInput = new TextBox();
-            newInputGrid.Children.Add(friendlyNameInput);
-            Grid.SetColumn(friendlyNameInput, 1);
+            var type = TypeService.CustomTypes.First(x => x.ID == input.TypeID);
+            if (!type.HasMultipleValues)
+            {
+                var friendlyNameInput = new TextBox();
+                newInputGrid.Children.Add(friendlyNameInput);
+                Grid.SetColumn(friendlyNameInput, 1);
+            }
+            else
+            {
+                var listDropDown = new ComboBox();
+                listDropDown.ItemsSource = type.ListValues;
+                newInputGrid.Children.Add(listDropDown);
+                Grid.SetColumn(listDropDown, 1);
+            }
+
 
             var id = new Label();
             id.Content = input.TypeID;
@@ -193,13 +205,13 @@ namespace POSH_Toolbelt.Controls
 
         private void Run_Click(object sender, RoutedEventArgs e)
         {
-            if(!AreRunInputsValid())
+            if (!AreRunInputsValid())
             {
                 return;
             }
             var inputs = GetRunInputsFromUI();
             var command = "";
-            foreach(var input in inputs)
+            foreach (var input in inputs)
             {
                 command += $"{input.Key} = \"{input.Value}\"" + Environment.NewLine;
             }
@@ -220,16 +232,25 @@ namespace POSH_Toolbelt.Controls
                 if (grid != null)
                 {
                     var typeID = ((Label)grid.Children[2]).Content.ToString();
-                    var value = ((TextBox)grid.Children[1]).Text;
                     var thisType = availableTypes.First(x => x.ID == Guid.Parse(typeID));
-                    if(!String.IsNullOrEmpty(thisType.Regex))
+                    
+                    if(!thisType.HasMultipleValues)
                     {
-                        var regex = new Regex(thisType.Regex);
-                        if(!regex.IsMatch(value))
+                        var value = ((TextBox)grid.Children[1]).Text;
+
+                        if (!String.IsNullOrEmpty(thisType.Regex))
                         {
-                            return false;
+                            var regex = new Regex(thisType.Regex);
+                            if (!regex.IsMatch(value))
+                            {
+                                return false;
+                            }
                         }
                     }
+                    else
+                    {
+                        return true;
+                    }                    
                 }
             }
             return true;
@@ -238,16 +259,30 @@ namespace POSH_Toolbelt.Controls
         private Dictionary<string, string> GetRunInputsFromUI()
         {
             var output = new Dictionary<string, string>();
+            var availableTypes = TypeService.GetAvailableTypes();
             var inputs = GetInputsFromUI();
             foreach (var child in RunInputs.Children)
             {
                 var grid = child as Grid;
                 if (grid != null)
                 {
-                    var variableFriendlyName = ((Label)grid.Children[0]).Content as String;
-                    var value = ((TextBox)grid.Children[1]).Text;
-                    var variableName = inputs.First(x => x.FriendlyName == variableFriendlyName).VariableName;
-                    output.Add(variableName, value);
+                    var typeID = ((Label)grid.Children[2]).Content.ToString();
+                    var thisType = availableTypes.First(x => x.ID == Guid.Parse(typeID));
+
+                    if(!thisType.HasMultipleValues)
+                    {
+                        var variableFriendlyName = ((Label)grid.Children[0]).Content as String;
+                        var value = ((TextBox)grid.Children[1]).Text;
+                        var variableName = inputs.First(x => x.FriendlyName == variableFriendlyName).VariableName;
+                        output.Add(variableName, value);
+                    }
+                    else
+                    {
+                        var variableFriendlyName = ((Label)grid.Children[0]).Content as String;
+                        var value = ((ComboBox)grid.Children[1]).SelectedValue.ToString();
+                        var variableName = inputs.First(x => x.FriendlyName == variableFriendlyName).VariableName;
+                        output.Add(variableName, value);
+                    }                    
                 }
             }
             return output;

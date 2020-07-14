@@ -1,4 +1,6 @@
-﻿using POSH_Toolbelt.Controls;
+﻿using Newtonsoft.Json;
+using POSH_Toolbelt.Controls;
+using POSH_Toolbelt.FileFormats;
 using POSH_Toolbelt.Models;
 using POSH_Toolbelt.Windows;
 using System;
@@ -31,6 +33,7 @@ namespace POSH_Toolbelt.Services
             rootTreeItem.Header = projectName;
             rootTreeItem.IsExpanded = true;
             AddCreateSnippetToTreeViewItem(rootTreeItem, projectPath);
+            AddCreateListToTreeViewItem(rootTreeItem, projectPath);
             AddCreateFolderToTreeViewItem(rootTreeItem, Path.GetDirectoryName(projectPath));
             RootNode = rootTreeItem;
             RefreshTreeView();
@@ -48,6 +51,7 @@ namespace POSH_Toolbelt.Services
                 
                 directoryItem.Header = directory.Name;
                 AddCreateSnippetToTreeViewItem(directoryItem, directory.FullName);
+                AddCreateListToTreeViewItem(directoryItem, directory.FullName);
                 AddCreateFolderToTreeViewItem(directoryItem, directory.FullName);
                 collection.Add(directoryItem);
                 RecursivelyBuildFolderTree(directoryItem.Items, directory.FullName);
@@ -78,6 +82,24 @@ namespace POSH_Toolbelt.Services
                 AddDeleteToTreeViewItem(newItem, file.FullName);
                 collection.Add(newItem);
             }
+
+            var poshToolbeltTypeFiles = directoryInfo.GetFiles("*.pttype");
+            foreach (var file in poshToolbeltTypeFiles)
+            {
+                var newItem = new TreeViewItem();
+                newItem.Header = file.Name;
+                newItem.MouseDoubleClick += (sender, args) =>
+                {
+                    OpenFileService.OpenFile(file.FullName);
+                };
+                AddDeleteToTreeViewItem(newItem, file.FullName);
+
+                var text = File.ReadAllText(file.FullName);
+                var type = JsonConvert.DeserializeObject<POSHToolbeltType>(text);
+                TypeService.CustomTypes.Add(type);
+
+                collection.Add(newItem);
+            }
         }
 
         private static void AddCreateSnippetToTreeViewItem(TreeViewItem treeViewItem, string path)
@@ -91,6 +113,22 @@ namespace POSH_Toolbelt.Services
             createItem.Click += (sender, args) =>
             {
                 var dialog = new NewSnippetDialog(path);
+                dialog.Show();
+            };
+            treeViewItem.ContextMenu.Items.Add(createItem);
+        }
+
+        private static void AddCreateListToTreeViewItem(TreeViewItem treeViewItem, string path)
+        {
+            if (treeViewItem.ContextMenu == null)
+            {
+                treeViewItem.ContextMenu = new ContextMenu();
+            }
+            var createItem = new MenuItem();
+            createItem.Header = "Create List";
+            createItem.Click += (sender, args) =>
+            {
+                var dialog = new NewListDialog(path);
                 dialog.Show();
             };
             treeViewItem.ContextMenu.Items.Add(createItem);

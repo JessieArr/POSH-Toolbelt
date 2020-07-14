@@ -59,6 +59,10 @@ namespace POSH_Toolbelt.Services
             {
                 return new SnippetEditor(path);
             }
+            if (path.EndsWith(FileExtensions.TypeExtension, StringComparison.OrdinalIgnoreCase))
+            {
+                return new TypeEditor(path);
+            }
             return new PowershellScriptEditor(path);
         }
     }
