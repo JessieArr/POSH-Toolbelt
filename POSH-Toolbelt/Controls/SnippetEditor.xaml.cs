@@ -140,7 +140,7 @@ namespace POSH_Toolbelt.Controls
             newInputGrid.Children.Add(friendlyName);
             Grid.SetColumn(friendlyName, 0);
 
-            var type = TypeService.CustomTypes.First(x => x.ID == input.TypeID);
+            var type = TypeService.GetAvailableTypes().First(x => x.ID == input.TypeID);
             if (!type.HasMultipleValues)
             {
                 var friendlyNameInput = new TextBox();

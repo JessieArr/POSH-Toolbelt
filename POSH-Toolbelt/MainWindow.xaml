@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:POSH_Toolbelt"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="POSH-Toolbelt" Height="450" Width="800">
     <DockPanel>
         <Menu DockPanel.Dock="Top" Width="Auto" Height="20">
             <MenuItem Header="_File">

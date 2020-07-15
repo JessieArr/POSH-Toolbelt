@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="112.17603mm"
+   height="88.741501mm"
+   viewBox="0 0 112.17603 88.741501"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="posh-toolbelt-logo.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="-136.31173"
+     inkscape:cy="172.71799"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-48.611393,-103.13966)">
+    <rect
+       style="fill:#00aaff;fill-opacity:1;stroke:#000000;stroke-width:1.00397396;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4534"
+       width="111.17205"
+       height="87.737526"
+       x="49.11338"
+       y="103.64165"
+       ry="6.3987303" />
+    <path
+       style="fill:#a05724;fill-opacity:1;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 59.333836,135.83647 c 0,0 21.114292,18.70887 49.979404,17.37252 28.86511,-1.33635 43.56493,-16.30344 43.56493,-16.30344 v 16.83798 c 0,0 -24.85607,13.63075 -46.5049,12.82894 -21.64883,-0.80181 -41.961316,-7.48355 -47.039434,-13.63075 -5.078122,-6.1472 0,-17.10525 0,-17.10525 z"
+       id="path4520"
+       inkscape:connector-curvature="0" />
+    <rect
+       style="fill:#f8c100;fill-opacity:1;stroke:#000000;stroke-width:1.4289999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4522"
+       width="28.063299"
+       height="18.441597"
+       x="93.322922"
+       y="150.647"
+       ry="9.2207985" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 120.19642,119.54017 13.04018,0.18899 17.19792,27.97024 -23.24554,31.18303 -12.6622,-0.18899 22.86756,-30.61607 z"
+       id="path4532"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 74.664319,116.15791 c -5.25372,0.0106 -9.08523,0.54726 -9.08523,0.54726 v 59.90952 l 11.71711,0.37775 c 0,0 0.18899,-18.1427 0,-26.2692 -0.18897,-8.12649 26.564881,6.42261 27.025231,-15.68586 0.34107,-16.38043 -18.098911,-18.90287 -29.657111,-18.87947 z m 3.73311,10.55388 c 3.22461,-0.008 16.14371,0.36432 16.47445,6.81354 0.37796,7.37054 -17.19792,4.15789 -17.19792,4.15789 v -10.96161 c 0,0 0.26281,-0.009 0.72347,-0.01 z"
+       id="path4536"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>
