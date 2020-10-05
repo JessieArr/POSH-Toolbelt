@@ -10,5 +10,6 @@ namespace POSH_Toolbelt.Constants
         public static string ProjectExtension => ".ptproj";
         public static string SnippetExtension => ".ptsnip";
         public static string TypeExtension => ".pttype";
+        public static string VaultExtension => ".ptvault";
     }
 }

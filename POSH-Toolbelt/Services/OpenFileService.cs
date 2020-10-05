@@ -44,6 +44,7 @@ namespace POSH_Toolbelt.Services
                 {
                     var currentValue = file.Value.Editor.GetCurrentFileContents();
                     file.Value.IsDirty = false;
+                    (new FileInfo(file.Value.FilePath)).Directory.Create();
                     File.WriteAllText(file.Value.FilePath, currentValue);
                 }
             }
@@ -62,6 +63,10 @@ namespace POSH_Toolbelt.Services
             if (path.EndsWith(FileExtensions.TypeExtension, StringComparison.OrdinalIgnoreCase))
             {
                 return new TypeEditor(path);
+            }
+            if (path.EndsWith(FileExtensions.VaultExtension, StringComparison.OrdinalIgnoreCase))
+            {
+                return new VaultEditor(path);
             }
             return new PowershellScriptEditor(path);
         }

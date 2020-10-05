@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.PowerShell;
+using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
@@ -44,7 +45,9 @@ namespace POSH_Toolbelt.Windows
         {
             InitializeComponent();
 
-            rs = RunspaceFactory.CreateRunspace();
+            var state = InitialSessionState.CreateDefault();
+            state.ExecutionPolicy = ExecutionPolicy.Unrestricted;
+            rs = RunspaceFactory.CreateRunspace(state);
             rs.Open();
 
             var outputBackgroundColor = Color.FromRgb(0, 36, 86);
