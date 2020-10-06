@@ -49,7 +49,7 @@ namespace POSH_Toolbelt.Controls
             newType.Name = _OriginalType.Name;
             newType.Regex = _OriginalType.Regex;
             var list = ListItems.Text.Split(Environment.NewLine).Where(x => !String.IsNullOrEmpty(x));
-            newType.ListValues = list.ToList();
+            newType.ListValues.Add(newType.Name, list.ToList());
             return JsonConvert.SerializeObject(newType, Formatting.Indented);
         }
 

@@ -150,11 +150,28 @@ namespace POSH_Toolbelt.Controls
             else
             {
                 var listDropDown = new ComboBox();
-                listDropDown.ItemsSource = type.ListValues;
+                if(type.ListValues.Count == 1)
+                {
+                    listDropDown.ItemsSource = type.ListValues.First().Value;
+                }
+                else
+                {
+                    var items = new List<Item>();
+                    foreach(var listSection in type.ListValues)
+                    {
+                        foreach(var element in listSection.Value)
+                        {
+                            items.Add(new Item(element, listSection.Key));
+                        }
+                    }
+
+                    var listCollection = new ListCollectionView(items);
+                    listCollection.GroupDescriptions.Add(new PropertyGroupDescription("Category"));
+                    listDropDown.ItemsSource = listCollection;
+                }
                 newInputGrid.Children.Add(listDropDown);
                 Grid.SetColumn(listDropDown, 1);
             }
-
 
             var id = new Label();
             id.Content = input.TypeID;
@@ -163,6 +180,18 @@ namespace POSH_Toolbelt.Controls
             Grid.SetColumn(id, 2);
 
             return newInputGrid;
+        }
+
+        public class Item
+        {
+            public string Name { get; set; }
+            public string Category { get; set; }
+
+            public Item(string name, string category)
+            {
+                Name = name;
+                Category = category;
+            }
         }
 
         private List<SnippetInput> GetInputsFromUI()
@@ -217,10 +246,10 @@ namespace POSH_Toolbelt.Controls
             }
             command += Environment.NewLine + ScriptEditor.Text;
 
-            //var window = new ConsoleWindow(command);
-            //window.Show();
-            var psService = new PowershellService();
-            psService.OpenPSWindowAndRunScript(command);
+            var window = new ConsoleWindow(command);
+            window.Show();
+            //var psService = new PowershellService();
+            //psService.OpenPSWindowAndRunScript(command);
         }
 
         private bool AreRunInputsValid()
@@ -268,6 +297,27 @@ namespace POSH_Toolbelt.Controls
                 {
                     var typeID = ((Label)grid.Children[2]).Content.ToString();
                     var thisType = availableTypes.First(x => x.ID == Guid.Parse(typeID));
+
+                    if(thisType.ID.ToString() == TypeService.SecretTypeID)
+                    {
+                        var variableFriendlyName = ((Label)grid.Children[0]).Content as String;
+                        var value = ((ComboBox)grid.Children[1]).SelectedValue.ToString();
+                        var variableName = inputs.First(x => x.FriendlyName == variableFriendlyName).VariableName;
+
+                        var vaults = OpenFileService.GetOpenVaults();
+                        foreach(var vault in vaults)
+                        {
+                            // This is a bug - we need to use the secret's ID to look it up later
+                            // once support for multiple vaults is added.
+                            if (vault.Vault.Secrets.Any(x => x.Key == value))
+                            {
+                                var secret = vault.Vault.Secrets.First(x => x.Key == value);
+                                output.Add(variableName, secret.Value);
+                            }
+                        }
+
+                        continue;
+                    }
 
                     if(!thisType.HasMultipleValues)
                     {

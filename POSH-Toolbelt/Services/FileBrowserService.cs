@@ -2,6 +2,7 @@
 using POSH_Toolbelt.Controls;
 using POSH_Toolbelt.FileFormats;
 using POSH_Toolbelt.Models;
+using POSH_Toolbelt.Services.Vault;
 using POSH_Toolbelt.Windows;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,14 @@ namespace POSH_Toolbelt.Services
             RootNode.Items.Clear();
 
             var projectDirectory = Path.GetDirectoryName(ProjectPath);
+            var vaultService = new VaultService();
+            var userVaultItem = new TreeViewItem();
+            userVaultItem.Header = "User Vault";
+            userVaultItem.MouseDoubleClick += (sender, args) =>
+            {
+                OpenFileService.OpenFile(vaultService.GetUserVaultPath());
+            };
+            RootNode.Items.Add(userVaultItem);
             RecursivelyBuildFolderTree(RootNode.Items, projectDirectory);
         }
 
@@ -42,7 +51,7 @@ namespace POSH_Toolbelt.Services
 
         private static void RecursivelyBuildFolderTree(ItemCollection collection, string path)
         {
-            var directoryInfo = new DirectoryInfo(path);
+            var directoryInfo = new DirectoryInfo(path);            
 
             var directories = directoryInfo.GetDirectories();
             foreach (var directory in directories)

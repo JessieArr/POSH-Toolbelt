@@ -1,6 +1,7 @@
 ﻿using POSH_Toolbelt.Constants;
 using POSH_Toolbelt.Controls;
 using POSH_Toolbelt.Models;
+using POSH_Toolbelt.Services.Vault;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,9 +45,24 @@ namespace POSH_Toolbelt.Services
                 {
                     var currentValue = file.Value.Editor.GetCurrentFileContents();
                     file.Value.IsDirty = false;
+                    (new FileInfo(file.Value.FilePath)).Directory.Create();
                     File.WriteAllText(file.Value.FilePath, currentValue);
                 }
             }
+        }
+
+        public static List<VaultStatus> GetOpenVaults()
+        {
+            var vaults = new List<VaultStatus>();
+            foreach(var file in _OpenFiles)
+            {
+                var vaultEditor = file.Value.Editor as VaultEditor;
+                if (vaultEditor != null)
+                {
+                    vaults.Add(vaultEditor.GetCurrentVaultStatus());
+                }
+            }
+            return vaults;
         }
 
         private static FileEditor GetEditorForFile(string path)
@@ -62,6 +78,10 @@ namespace POSH_Toolbelt.Services
             if (path.EndsWith(FileExtensions.TypeExtension, StringComparison.OrdinalIgnoreCase))
             {
                 return new TypeEditor(path);
+            }
+            if (path.EndsWith(FileExtensions.VaultExtension, StringComparison.OrdinalIgnoreCase))
+            {
+                return new VaultEditor(path);
             }
             return new PowershellScriptEditor(path);
         }

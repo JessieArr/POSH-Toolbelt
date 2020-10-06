@@ -1,0 +1,17 @@
+﻿<Window x:Class="POSH_Toolbelt.Windows.UnlockVaultWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:POSH_Toolbelt.Windows"
+        mc:Ignorable="d"
+        Title="UnlockVault" Height="450" Width="800">
+    <Grid>
+        <StackPanel>
+            <Label>Enter password to unlock this vault!</Label>
+            <PasswordBox x:Name="Password"></PasswordBox>
+            <Button Click="Unlock_Click">Unlock</Button>
+            <Label x:Name="ErrorText"></Label>
+        </StackPanel>        
+    </Grid>
+</Window>

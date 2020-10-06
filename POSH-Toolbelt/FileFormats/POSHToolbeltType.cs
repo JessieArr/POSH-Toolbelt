@@ -11,12 +11,7 @@ namespace POSH_Toolbelt.FileFormats
         public string Regex { get; set; }
         public bool EmitQuotes { get; set; }
         public bool HasMultipleValues { get; set; }
-        public List<string> ListValues { get; set; } = new List<string>();
-    }
-
-    public static class POSHTypeList
-    {
-        public static string Regex = "Regex";
-        public static string List = "List";
+        public virtual Dictionary<string, List<string>> ListValues { get; set; } 
+            = new Dictionary<string, List<string>>();
     }
 }
