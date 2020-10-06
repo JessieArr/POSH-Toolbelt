@@ -246,10 +246,10 @@ namespace POSH_Toolbelt.Controls
             }
             command += Environment.NewLine + ScriptEditor.Text;
 
-            var window = new ConsoleWindow(command);
-            window.Show();
-            //var psService = new PowershellService();
-            //psService.OpenPSWindowAndRunScript(command);
+            //var window = new ConsoleWindow(command);
+            //window.Show();
+            var psService = new PowershellService();
+            psService.OpenPSWindowAndRunScript(command);
         }
 
         private bool AreRunInputsValid()
