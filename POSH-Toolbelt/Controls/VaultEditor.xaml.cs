@@ -36,10 +36,23 @@ namespace POSH_Toolbelt.Controls
             {
                 UnlockButton.Visibility = Visibility.Hidden;
             }
+
+            if(!_Vault.IsUnlocked || !_Vault.IsInitialized)
+            {
+                // If we have not unlocked the vault, it cannot be modified.
+                NewSecretButton.IsEnabled = false;
+            }
+        }
+
+        public VaultStatus GetCurrentVaultStatus()
+        {
+            return _Vault;
         }
 
         public override string GetCurrentFileContents()
         {
+            var currentSecrets = GetSecretsFromUI();
+            _Vault.Vault.Secrets = currentSecrets;
             _VaultService.EncryptVault(_Vault);
             return _Vault.EncryptedVault;
         }
@@ -58,20 +71,73 @@ namespace POSH_Toolbelt.Controls
 
         private void NewSecretButton_Click(object sender, RoutedEventArgs e)
         {
-            var newSecretStack = new StackPanel();
-            newSecretStack.Orientation = Orientation.Horizontal;
-            newSecretStack.Children.Add(new Label() { Content = "Key" });
-            newSecretStack.Children.Add(new Label() { Content = "Value" });
-            SecretList.Children.Add(newSecretStack);
+            var newSecretGrid = GetGridForSecret(new KeyValuePair<string, string>("MySecret", ""));
+            SecretList.Children.Add(newSecretGrid);
+            VaultModified();
         }
 
         public void VaultInitialized()
         {
-            OpenFileService.FileTextChanged(_Vault.VaultFilePath);
+            VaultModified();
+            NewSecretButton.IsEnabled = true;
         }
 
         public void VaultUnlocked()
         {
+            BuildUIFromVaultContents(_Vault.Vault);
+            NewSecretButton.IsEnabled = true;
+        }
+
+        private Grid GetGridForSecret(KeyValuePair<string, string> secret)
+        {
+            var newSecretGrid = new Grid();
+            newSecretGrid.Visibility = Visibility.Visible;
+            newSecretGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            newSecretGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            newSecretGrid.RowDefinitions.Add(new RowDefinition());
+
+            var variableName = new TextBox();
+            variableName.Text = secret.Key;
+            newSecretGrid.Children.Add(variableName);
+            Grid.SetColumn(variableName, 0);
+
+            var friendlyName = new PasswordBox();
+            friendlyName.Password = secret.Value;
+            newSecretGrid.Children.Add(friendlyName);
+            Grid.SetColumn(friendlyName, 1);
+
+            return newSecretGrid;
+        }
+
+        private void BuildUIFromVaultContents(SecretVault vault)
+        {
+            SecretList.Children.Clear();
+            foreach (var kvp in vault.Secrets)
+            {
+                var gridForSecret = GetGridForSecret(kvp);
+                SecretList.Children.Add(gridForSecret);
+            }
+        }
+
+        private Dictionary<string, string> GetSecretsFromUI()
+        {
+            var secrets = new Dictionary<string, string>();
+            foreach (var child in SecretList.Children)
+            {
+                var grid = child as Grid;
+                if (grid != null)
+                {
+                    var secretName = ((TextBox)grid.Children[0]).Text;
+                    var secretValue = ((PasswordBox)grid.Children[1]).Password;
+                    secrets.Add(secretName, secretValue);
+                }
+            }
+            return secrets;
+        }
+
+        private void VaultModified()
+        {
+            OpenFileService.FileTextChanged(_Vault.VaultFilePath);
         }
     }
 }
